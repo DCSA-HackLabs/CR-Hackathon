@@ -9,7 +9,7 @@ El equipo de datos debe realizar la **ingesta desde Azure Cosmos DB** hacia la c
 ### 🎯 Tu Misión  
 Al completar este reto podrás:  
 
-✅ Ingerir los datos desde **Azure Cosmos DB** hacia **Microsoft Fabric** utilizando **Dataflows Gen2**.  
+✅ Ingerir los datos desde **Azure Cosmos DB** hacia **Microsoft Fabric** utilizando **Dataflows Gen2 o pipelines**.  
 ✅ Aplicar una **limpieza básica** que incluya:  
 - Manejo de valores nulos o vacíos.  
 - Eliminación de columnas innecesarias.  
@@ -18,10 +18,10 @@ Al completar este reto podrás:
 
 ---
 
-## 🚀 Paso 1: Crear un Dataflow Gen2 para la Ingesta desde Cosmos DB  
+## 🚀 Paso 1: Crear un Dataflow Gen2 o pipeline para la Ingesta desde Cosmos DB  
 💡 *¿Por qué?* Los **Dataflows Gen2** permiten realizar la ingesta y transformación inicial de datos sin necesidad de código, conectando fácilmente fuentes externas como Cosmos DB con tu Lakehouse.  
 
-1️⃣ En **Microsoft Fabric**, crea un nuevo **Dataflow Gen2** dentro de tu workspace.  
+1️⃣ En **Microsoft Fabric**, crea un nuevo **Dataflow Gen2 o pipeline** dentro de tu workspace.  
 🔹 Selecciona **Azure Cosmos DB** como fuente de datos.  
 🔹 Ingresa las credenciales de conexión (endpoint y clave de acceso).  
 🔹 Conecta con el contenedor que contiene los datos de **ventas** o **finanzas**.  

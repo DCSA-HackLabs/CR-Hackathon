@@ -55,7 +55,7 @@ Al completar este reto podrás:
 💡 *¿Por qué?* La Lakehouse es la base de la arquitectura de datos y permite separar las etapas de procesamiento.  
 
 1️⃣ En Fabric, crea una **Lakehouse** llamada `Contoso_Lakehouse`.  
-2️⃣ Dentro de la Lakehouse, define la siguiente estructura de carpetas:  
+2️⃣ Dentro de la Lakehouse, define la siguiente estructura:  
    - 🥉 **Bronze:** Datos crudos y sin procesar, ingeridos directamente desde Cosmos DB.  
    - 🥈 **Silver:** Datos limpios, normalizados y consistentes.  
    - 🥇 **Gold:** Datos curados y listos para análisis o visualizaciones.  
