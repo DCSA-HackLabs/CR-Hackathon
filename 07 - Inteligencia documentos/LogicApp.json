@@ -1,0 +1,101 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "triggers": {
+            "When_a_blob_is_added_or_modified_(properties_only)_(V2)": {
+                "recurrence": {
+                    "interval": 1,
+                    "frequency": "Minute",
+                    "timeZone": "Central America Standard Time"
+                },
+                "evaluatedRecurrence": {
+                    "interval": 1,
+                    "frequency": "Minute",
+                    "timeZone": "Central America Standard Time"
+                },
+                "splitOn": "@triggerBody()",
+                "type": "ApiConnection",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azureblob']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('<<Your Storage Account Name>>'))}/triggers/batch/onupdatedfile",
+                    "queries": {
+                        "folderId": "<<Your  Incoming COntainer FolderID>>",
+                        "maxFileCount": 10,
+                        "checkBothCreatedAndModifiedDateTime": false
+                    }
+                },
+                "conditions": [
+                    {
+                        "expression": "@endsWith(triggerOutputs()?['body']['name'], '.pdf')"
+                    }
+                ]
+            }
+        },
+        "actions": {
+            "Analyze_Document_for_Prebuilt_or_Custom_models_(v4.x_API)": {
+                "runAfter": {},
+                "type": "ApiConnection",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['formrecognizer']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "body": "{\"urlSource\":\"https://<<Your Storage Account Name>>.blob.core.windows.net/<<Your Json Container Name>>/@{triggerOutputs()?['body']['name']}\"}",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "path": "/documentModels/prebuilt-invoice:analyze",
+                    "queries": {
+                        "api-version": "2023-07-31"
+                    }
+                }
+            },
+            "Create_blob_(V2)": {
+                "runAfter": {
+                    "Analyze_Document_for_Prebuilt_or_Custom_models_(v4.x_API)": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azureblob-1']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "body": "@body('Analyze_Document_for_Prebuilt_or_Custom_models_(v4.x_API)')",
+                    "headers": {
+                        "ReadFileMetadataFromServer": true
+                    },
+                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('<<Your storage account name>>'))}/files",
+                    "queries": {
+                        "folderPath": "<<Your Json folder container name>>/",
+                        "name": "analyzed-invoice-@{triggerOutputs()?['body']['name']}.json",
+                        "queryParametersSingleEncoded": true
+                    }
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            }
+        },
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "type": "Object",
+                "defaultValue": {}
+            }
+        }
+    }
+}
